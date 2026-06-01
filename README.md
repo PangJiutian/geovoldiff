@@ -155,12 +155,12 @@ geovoldiff/
 
 ---
 
-## 🗺️ Roadmap
+## 📝 TODO
 
-- [ ] Release training code
-- [ ] Upload pre-trained weights to HuggingFace
-- [ ] Add training tutorial / config documentation
-- [ ] Support larger volume resolutions (256³)
+- ✅ Upload pre-trained weights to HuggingFace
+- ⬜ Release training code
+- ⬜ Add training tutorial / config documentation
+- ⬜ Support larger volume resolutions (256³)
 
 ---
 
