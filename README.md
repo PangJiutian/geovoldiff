@@ -1,7 +1,7 @@
 <div align="center">
 
 # 🌍 GeoVolDiff
-**Latent Diffusion Models for 3D Geological Seismic Volume Synthesis**
+**Taming 3D Geological Volumes with Latent Diffusions**
 
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](LICENSE) [![Python](https://img.shields.io/badge/Python-3.8%2B-brightgreen.svg)](https://www.python.org/) [![HuggingFace](https://img.shields.io/badge/🤗%20HuggingFace-Weights-yellow)](https://huggingface.co/PangJiutian/geovoldiff) [![Paper](https://img.shields.io/badge/Paper-TODO-red)](TODO) [![Diffusers](https://img.shields.io/badge/Built%20on-🧨%20Diffusers-orange)](https://github.com/huggingface/diffusers)
 
