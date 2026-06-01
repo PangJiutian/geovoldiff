@@ -5,6 +5,8 @@
 
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](LICENSE) [![Python](https://img.shields.io/badge/Python-3.8%2B-brightgreen.svg)](https://www.python.org/) [![HuggingFace](https://img.shields.io/badge/🤗%20HuggingFace-Weights-yellow)](https://huggingface.co/) [![Paper](https://img.shields.io/badge/Paper-TODO-red)](TODO) [![Diffusers](https://img.shields.io/badge/Built%20on-🧨%20Diffusers-orange)](https://github.com/huggingface/diffusers)
 
+<img src="images/data_sample.png" alt="GeoVolDiff Generation Results" width="800">
+
 </div>
  
 ---
