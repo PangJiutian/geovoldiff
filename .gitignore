@@ -1,9 +1,11 @@
 # Ignore all contents
 train_ckpt/*
+test_data/*
 
 # But keep these
 !train_ckpt/.gitkeep
 !train_ckpt/README.md
+!test_data/.gitkeep
 
 *.pth
 *.pt
