@@ -1,0 +1,40 @@
+# Model checkpoints
+train_ckpt/
+*.pth
+*.pt
+*.ckpt
+
+# NumPy data files
+*.npy
+*.npz
+
+# Python cache
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Environment
+.env
+.venv/
+venv/
+env/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+
+# Jupyter
+.ipynb_checkpoints/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs and outputs
+output_dir/
+logging_dir/
+runs/
+wandb/
+*.log
