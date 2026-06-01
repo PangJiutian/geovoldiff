@@ -1,11 +1,14 @@
-# Model checkpoints
-train_ckpt/
-*.pth
-*.pt
-*.ckpt
+# Ignore all contents
+train_ckpt/*
 
 # But keep these
 !train_ckpt/.gitkeep
+!train_ckpt/README.md
+
+*.pth
+*.pt
+*.ckpt
+*.safetensors
 
 # NumPy data files
 *.npy
