@@ -3,7 +3,7 @@
 # 🌍 GeoVolDiff
 **Latent Diffusion Models for 3D Geological Seismic Volume Synthesis**
 
-[![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](LICENSE) [![Python](https://img.shields.io/badge/Python-3.8%2B-brightgreen.svg)](https://www.python.org/) [![HuggingFace](https://img.shields.io/badge/🤗%20HuggingFace-Weights-yellow)](https://huggingface.co/) [![Paper](https://img.shields.io/badge/Paper-TODO-red)](TODO) [![Diffusers](https://img.shields.io/badge/Built%20on-🧨%20Diffusers-orange)](https://github.com/huggingface/diffusers)
+[![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](LICENSE) [![Python](https://img.shields.io/badge/Python-3.8%2B-brightgreen.svg)](https://www.python.org/) [![HuggingFace](https://img.shields.io/badge/🤗%20HuggingFace-Weights-yellow)](https://huggingface.co/PangJiutian/geovoldiff) [![Paper](https://img.shields.io/badge/Paper-TODO-red)](TODO) [![Diffusers](https://img.shields.io/badge/Built%20on-🧨%20Diffusers-orange)](https://github.com/huggingface/diffusers)
 
 <img src="images/data_sample.png" alt="GeoVolDiff Generation Results" width="800">
 
@@ -48,9 +48,10 @@ pip install -r requirements.txt
 
 ---
 
-## 🏋️ Model Weights
+## 🏋️ Model Weights & Test Data
 
-Pre-trained weights are available on HuggingFace 🤗: *(link coming soon)*
+Pre-trained weights and test data are available on HuggingFace 🤗: **[PangJiutian/geovoldiff](https://huggingface.co/PangJiutian/geovoldiff)**
+
 
 Once available, download and place them under `train_ckpt/`:
 
@@ -59,6 +60,11 @@ train_ckpt/
 ├── ldm_3d_controlnet/                          # Fault-conditioned generation
 ├── inversion_pretrain/                         # Base seismic inversion model
 └── inversion_pretrain_post_train_on_fieldwav/  # Field-data fine-tuned inversion
+
+test_data/
+├── fault_label.npy                             # Binary fault mask for conditioned generation
+├── seimic_nor.npy                              # Normalized 2D seismic for inversion
+└── well_logs_imp.npy                           # Well log impedance data
 ```
 
 ---
