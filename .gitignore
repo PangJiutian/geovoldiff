@@ -4,6 +4,9 @@ train_ckpt/
 *.pt
 *.ckpt
 
+# But keep these
+!train_ckpt/.gitkeep
+
 # NumPy data files
 *.npy
 *.npz
