@@ -3,7 +3,7 @@
 # 🌍 GeoVolDiff
 **Taming 3D Geological Volumes with Latent Diffusions**
 
-[![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](LICENSE) [![Python](https://img.shields.io/badge/Python-3.8%2B-brightgreen.svg)](https://www.python.org/) [![HuggingFace](https://img.shields.io/badge/🤗%20HuggingFace-Weights-yellow)](https://huggingface.co/PangJiutian/geovoldiff) [![Paper](https://img.shields.io/badge/Paper-TODO-red)](TODO) [![Diffusers](https://img.shields.io/badge/Built%20on-🧨%20Diffusers-orange)](https://github.com/huggingface/diffusers)
+[![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](LICENSE) [![Python](https://img.shields.io/badge/Python-3.8%2B-brightgreen.svg)](https://www.python.org/) [![HuggingFace](https://img.shields.io/badge/🤗%20HuggingFace-Weights-yellow)](https://huggingface.co/PangJiutian/geovoldiff) [![Paper](https://img.shields.io/badge/Paper-arXiv-red)](https://arxiv.org/abs/2606.03572) [![Diffusers](https://img.shields.io/badge/Built%20on-🧨%20Diffusers-orange)](https://github.com/huggingface/diffusers)
 
 <img src="images/data_sample.png" alt="GeoVolDiff Generation Results" width="800">
 
@@ -169,11 +169,11 @@ geovoldiff/
 If you use GeoVolDiff in your research, please cite:
 
 ```bibtex
-@article{geovoldiff2026,
-  title   = {GeoVolDiff: Taming 3D Geological Volumes with Latent Diffusion},
-  author  = {Qi Pang, Hongling Chen, Jinghuai Gao},
-  journal = {TODO},
-  year    = {2026},
+@article{pang2026geovoldiff,
+  title={GeoVolDiff: Taming 3D Geological Volumes with Latent Diffusion},
+  author={Qi Pang and Hongling Chen and Jinghuai Gao},
+  journal={arXiv preprint arXiv:2606.03572},
+  year={2026}
 }
 ```
 
