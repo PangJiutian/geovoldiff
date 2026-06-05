@@ -39,7 +39,7 @@
 **Requirements:** Python 3.8+, CUDA-capable GPU recommended
 
 ```bash
-git clone https://github.com/<your-username>/geovoldiff.git
+git clone https://github.com/PangJiutian/geovoldiff.git
 cd geovoldiff
 pip install -r requirements.txt
 ```
@@ -75,7 +75,7 @@ All example scripts are run from the repository root. They expect model weights 
 
 ### 1. Unconditional Generation
 
-Generate 3D seismic volumes from noise — no conditioning required.
+Generate 3D geological volumes from pure noise (no conditioning required) using `CondGeoVolDiffPipeline`.
 
 ```python
 images = pipe(
