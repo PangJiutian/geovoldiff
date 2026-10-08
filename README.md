@@ -17,7 +17,6 @@
 
 </div>
 
-<br>
 
 <a id="overview"></a>
 
@@ -57,8 +56,6 @@ Place downloaded weights under `train_ckpt/`, set the model and label paths in *
 
 </div>
 
-<br>
-
 <a id="seismic-inversion"></a>
 
 ## 🌊 Seismic Inversion
@@ -72,8 +69,6 @@ Generated data supports seismic inversion pretraining, providing geological stru
 <sub>Downstream evaluation · Seismic inversion</sub>
 
 </div>
-
-<br>
 
 ---
 
