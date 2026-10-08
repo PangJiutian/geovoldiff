@@ -42,6 +42,7 @@ Thumbs.db
 
 # Logs and outputs
 output_dir/
+outputs/
 logging_dir/
 runs/
 wandb/

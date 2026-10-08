@@ -1,20 +1,7 @@
-# Copyright 2024 The HuggingFace Team. All rights reserved.
-#
-# Licensed under the Apache License, Version 2.0 (the "License");
-# you may not use this file except in compliance with the License.
-# You may obtain a copy of the License at
-#
-#     http://www.apache.org/licenses/LICENSE-2.0
-#
-# ------------------------------------------------------------
-# Modifications by Qi Pang (2026)
-# Description: Extended AutoencoderKL to 3D architecture for
-#   volumetric seismic data processing.
-#   Added TemporalAttention: original parallel axial attention
-#   module for memory-efficient 3D bottleneck attention.
-# Original source: https://github.com/huggingface/diffusers
-# ------------------------------------------------------------
-
+"""
+Author: Qi Pang
+Description: Based on Diffusers AutoencoderKL
+"""
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
@@ -77,6 +64,23 @@ class DiagonalGaussianDistribution:
                     dim=[1, 2, 3, 4]
                 )
 
+class RMS_norm(nn.Module):
+
+    def __init__(self, dim, channel_first=True, images=True, bias=False):
+        super().__init__()
+        broadcastable_dims = (1, 1, 1) if not images else (1, 1)
+        shape = (dim, *broadcastable_dims) if channel_first else (dim,)
+
+        self.channel_first = channel_first
+        self.scale = dim ** 0.5
+        self.gamma = nn.Parameter(torch.ones(shape))
+        self.bias = nn.Parameter(torch.zeros(shape)) if bias else 0.
+
+    def forward(self, x):
+        return F.normalize(
+            x, dim=(1 if self.channel_first else
+                    -1)) * self.scale * self.gamma + self.bias
+
 class ResnetBlock3D(nn.Module):
     """
     3D Residual Block
@@ -95,9 +99,11 @@ class ResnetBlock3D(nn.Module):
         out_channels = in_channels if out_channels is None else out_channels
         self.out_channels = out_channels
 
+        # self.norm1 = RMS_norm(in_channels, images=False)
         self.norm1 = torch.nn.GroupNorm(num_groups=groups, num_channels=in_channels, eps=eps, affine=True)
         self.conv1 = nn.Conv3d(in_channels, out_channels, kernel_size=3, padding=1)
 
+        # self.norm2 = RMS_norm(out_channels, images=False)
         self.norm2 = torch.nn.GroupNorm(num_groups=groups, num_channels=out_channels, eps=eps, affine=True)
         self.dropout = nn.Dropout(dropout)
         self.conv2 = nn.Conv3d(out_channels, out_channels, kernel_size=3, padding=1)
@@ -124,6 +130,43 @@ class ResnetBlock3D(nn.Module):
             x = self.conv_shortcut(x)
 
         return x + h
+
+class AttentionBlock3D(nn.Module):
+    def __init__(self, dim, head_dim):
+        super().__init__()
+        self.dim = dim
+        self.head_dim = head_dim
+        self.num_heads = dim // head_dim
+
+        # layers
+        self.norm = RMS_norm(dim)
+        self.to_qkv = nn.Conv2d(dim, dim * 3, 1)
+        self.proj = nn.Conv2d(dim, dim, 1)
+
+        # zero out the last layer params
+        nn.init.zeros_(self.proj.weight)
+
+    def forward(self, x):
+        identity = x
+        b, c, t, h, w = x.shape
+        x = rearrange(x, 'b c t h w -> (b t) c h w')
+
+        x = self.norm(x)
+
+        q, k, v = self.to_qkv(x).chunk(3, dim=1)
+
+        # (b*t, heads, hw, head_dim)
+        q = rearrange(q, 'n (h d) x y -> n h (x y) d', h=self.num_heads)
+        k = rearrange(k, 'n (h d) x y -> n h (x y) d', h=self.num_heads)
+        v = rearrange(v, 'n (h d) x y -> n h (x y) d', h=self.num_heads)
+
+        x = F.scaled_dot_product_attention(q, k, v)
+        x = rearrange(x, 'n h (x y) d -> n (h d) x y', x=h, y=w)
+
+        x = self.proj(x)
+        x = rearrange(x, '(b t) c h w -> b c t h w', b=b, t=t)
+
+        return x + identity
 
 class TemporalAttention(nn.Module):
     def __init__(
@@ -422,6 +465,7 @@ class Encoder3D(nn.Module):
         )
 
         # Output
+        # self.conv_norm_out = RMS_norm(block_out_channels[-1], images=False)
         self.conv_norm_out = torch.nn.GroupNorm(num_groups=norm_num_groups, num_channels=block_out_channels[-1])
         self.conv_act = nn.SiLU()
 
@@ -506,6 +550,7 @@ class Decoder3D(nn.Module):
             self.up_blocks.append(up_block)
 
         # Output
+        # self.conv_norm_out = RMS_norm(block_out_channels[0], images=False)
         self.conv_norm_out = torch.nn.GroupNorm(num_groups=norm_num_groups, num_channels=block_out_channels[0])
         self.conv_act = nn.SiLU()
         self.conv_out = nn.Conv3d(block_out_channels[0], out_channels, kernel_size=3, padding=1)
@@ -678,6 +723,11 @@ class AutoencoderKL3D(ModelMixin, ConfigMixin):
 if __name__ == "__main__":
     b, c, t, h, w = 1, 1, 32, 32, 32
     sample = torch.randn(b, c, t, h, w)
+    # net = ResnetBlock3D(c, c, groups=3)
+    # net = AttentionBlock3D(c, 3, groups=3)
+    # net = Upsample3D(c)
+    # net = Encoder3D(c)
+    # net = Decoder3D(c)
     vae = AutoencoderKL3D(
         in_channels=1,
         out_channels=1,
@@ -685,9 +735,9 @@ if __name__ == "__main__":
         block_out_channels=(32, 64, 64),
         scaling_factor=1.0,
         mid_block_add_attention=True,
-        attention_head_dim=8,
-    )
+        attention_head_dim=8)
+
     out = vae.encode(sample).latent_dist
     latent = out.sample()
-    x_recon = vae.decode(latent).sample
-
+    x_recon = vae.decode(out.sample()).sample
+    # a =

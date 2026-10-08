@@ -1,6 +1,6 @@
 """
 Author: Qi Pang 
-Description: Conditional 3D Geological Volumes generation pipepine
+Description: ldm pipepine
 """
 import torch
 import torch.nn.functional as F
@@ -14,11 +14,13 @@ from diffusers.utils.torch_utils import randn_tensor
 from diffusers.pipelines.pipeline_utils import DiffusionPipeline
 
 from models.unet_condition_3d import MyUNet3DCondition
-from models.vae_3d import AutoencoderKL3D
+from models.vae_3d_0 import AutoencoderKL3D
 from models.controlnet_3d import MyControlNet3D
 
 
-class CondGeoVolDiffPipeline(DiffusionPipeline):
+class ControlNetLDMPipeline3D(DiffusionPipeline):
+    _optional_components = ["vae", "controlnet"]
+
     def __init__(self, vae: AutoencoderKL3D, unet: MyUNet3DCondition,
                  scheduler: DDIMScheduler,
                  controlnet: MyControlNet3D):
@@ -125,6 +127,15 @@ class CondGeoVolDiffPipeline(DiffusionPipeline):
         timesteps = self.scheduler.timesteps if not show_progress else tqdm(self.scheduler.timesteps, desc="Denoising")
         
         do_classifier_free_guidance = guidance_scale > 1.0
+        # Optional-condition checkpoints learn their null path with ControlNet active.
+        if (controlnet_cond is None and self.controlnet is not None
+                and getattr(self.controlnet.config, "condition_specs", None)):
+            specs = self.controlnet.config.condition_specs
+            factor = 2 ** (len(self.controlnet.config.conditioning_embedding_out_channels) - 1)
+            controlnet_cond = latents.new_zeros(
+                latents.shape[0], sum(c + 1 for c in specs.values()),
+                *(s * factor for s in latents.shape[2:]),
+            )
         
         if do_classifier_free_guidance:
             latents = torch.cat([latents] * 2)
@@ -257,3 +268,8 @@ class CondGeoVolDiffPipeline(DiffusionPipeline):
         images = self.decode_latents(latents)
         return images
 
+
+
+# Back-compat alias: pipelines saved before the rename recorded
+# _class_name 'MyLDMPipeline'; keep the old name importable.
+MyLDMPipeline = ControlNetLDMPipeline3D
